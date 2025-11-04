@@ -32,7 +32,7 @@ class Home extends Phaser.Scene {
         });
 
         // tombol tentang
-        const button2 = this.createButton(window.innerWidth / 2, window.innerHeight / 2 + 200, 'button2', buttonSound, () => {
+        const button2 = this.createButton(window.innerWidth / 2, window.innerHeight / 2 + 208, 'button2', buttonSound, () => {
             button.setOrigin(0.5, 0.5);
             this.scene.start('Tentang'); 
         });

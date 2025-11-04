@@ -10,6 +10,7 @@ import Kuis from './Kuis.js';
 import menulisLontara from './menulisLontara.js'; 
 import latihanMenulisLontara from './latihanMenulisLontara.js'; 
 import musikBg from './musikBg.js'; 
+import Developing from './Developing.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -19,7 +20,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    scene: [ musikBg, Home, Tentang, Belajar, bajuAdat, alatMusik, rumahAdat, Lontara, Bermain, Kuis, menulisLontara, latihanMenulisLontara],
+    scene: [ musikBg, Home, Tentang, Belajar, bajuAdat, alatMusik, rumahAdat, Lontara, Bermain, Kuis, menulisLontara, latihanMenulisLontara, Developing],
     parent: 'gameContainer',
     dom: {
         createContainer: true

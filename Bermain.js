@@ -5,9 +5,11 @@ class Bermain extends Phaser.Scene {
 
     preload() {
         this.load.image('bermainbg', 'assets/bg.png');
-        this.load.image('buttonHome', 'assets/button home (1).png');
-        this.load.image('bermainButton1', 'assets/button kuis.png');
-        this.load.image('bermainButton2', 'assets/button menulis lontara.png');
+        this.load.image('buttonHomeHijau', 'assets/button home.png');
+        this.load.image('bermainButton1', 'assets/button tebak kata.png');
+        this.load.image('bermainButton2', 'assets/button buat kalimat.png');
+        this.load.image('bermainButton3', 'assets/button lontara.png');
+        this.load.image('bermainButton4', 'assets/button kuis budaya.png');
         this.load.audio('soundHome', 'music/click_effect-86995.mp3'); // Suara tombol home
         this.load.audio('buttonSound', 'music/item-pick-up-38258.mp3'); // Suara tombol
     }
@@ -23,39 +25,62 @@ class Bermain extends Phaser.Scene {
         // suara tombol
         const buttonSound = this.sound.add('buttonSound');
 
-        // Jarak antara tombol
-        const buttonSpacing = 200;
+        // Jarak horizontal & vertikal antar tombol
+        const buttonHorizontalSpacing = 260;
+        const buttonVerticalSpacing = 150;
 
-        // Koordinat posisi untuk kedua tombol di tengah layar
+        // Titik tengah layar
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
 
-        const button1X = centerX - buttonSpacing;
-        const button2X = centerX + buttonSpacing;
+        // Posisi tombol (2x2 grid)
+        const button1X = centerX - buttonHorizontalSpacing / 2;
+        const button1Y = centerY - buttonVerticalSpacing / 2;
+        const button2X = centerX + buttonHorizontalSpacing / 2;
+        const button2Y = centerY - buttonVerticalSpacing / 2;
+        const button3X = centerX - buttonHorizontalSpacing / 2;
+        const button3Y = centerY + buttonVerticalSpacing / 2;
+        const button4X = centerX + buttonHorizontalSpacing / 2;
+        const button4Y = centerY + buttonVerticalSpacing / 2;
 
         // Assign buttons to class properties
-        this.bermainButton1 = this.createButton(button1X, centerY, 'bermainButton1', buttonSound, () => {
-            this.scene.start('Kuis');
+        this.bermainButton1 = this.createButton(button1X, button1Y, 'bermainButton1', buttonSound, () => {
+            this.scene.start('developing');
         });
-
-        this.bermainButton2 = this.createButton(button2X, centerY, 'bermainButton2', buttonSound, () => {
+        this.bermainButton2 = this.createButton(button2X, button2Y, 'bermainButton2', buttonSound, () => {
+            this.scene.start('developing');
+        });
+        this.bermainButton3 = this.createButton(button3X, button3Y, 'bermainButton3', buttonSound, () => {
             this.scene.start('menulisLontara');
+        });
+        this.bermainButton4 = this.createButton(button4X, button4Y, 'bermainButton4', buttonSound, () => {
+            this.scene.start('developing');
         });
 
         // tombol home
         const buttonMargin = 60; 
-        this.buttonHome = this.createButton(buttonMargin, buttonMargin, 'buttonHome', soundHome, () => {
+        this.buttonHome = this.createButton(buttonMargin, buttonMargin, 'buttonHomeHijau', soundHome, () => {
             this.buttonHome.setOrigin(0, 0); 
             this.scene.start('Home');
         });
 
+        this.updateButtonPositions = () => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const buttonHorizontalSpacing = 530;
+            const buttonVerticalSpacing = 200;
+
+            this.bermainButton1.setPosition(centerX - buttonHorizontalSpacing / 2, centerY - buttonVerticalSpacing / 2);
+            this.bermainButton2.setPosition(centerX + buttonHorizontalSpacing / 2, centerY - buttonVerticalSpacing / 2);
+            this.bermainButton3.setPosition(centerX - buttonHorizontalSpacing / 2, centerY + buttonVerticalSpacing / 2);
+            this.bermainButton4.setPosition(centerX + buttonHorizontalSpacing / 2, centerY + buttonVerticalSpacing / 2);
+        };
+
         this.updateButtonPositions();
 
-        // responsif saat ukuran jendela berubah
         window.addEventListener('resize', () => {
             this.game.scale.resize(window.innerWidth, window.innerHeight);
             this.resizeImage(bermainbg);
-            this.resizeButton(this.buttonHome);
             this.updateButtonPositions();
         });
     }
@@ -94,24 +119,6 @@ class Bermain extends Phaser.Scene {
 
     isMobile() {
         return window.innerWidth <= 800;
-    }
-
-    updateButtonPositions() {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-
-        if (this.isMobile()) {
-            const button1Y = centerY - 100;
-            const button2Y = centerY + 100;
-            this.bermainButton1.setPosition(centerX, button1Y);
-            this.bermainButton2.setPosition(centerX, button2Y);
-        } else {
-            const buttonSpacing = 200;
-            const button1X = centerX - buttonSpacing;
-            const button2X = centerX + buttonSpacing;
-            this.bermainButton1.setPosition(button1X, centerY);
-            this.bermainButton2.setPosition(button2X, centerY);
-        }
     }
 }
 

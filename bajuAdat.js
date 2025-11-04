@@ -2,15 +2,16 @@ class bajuAdat extends Phaser.Scene {
     constructor() {
         super({ key: 'bajuAdat' });
         this.currentContentIndex = 0;
-        this.contents = ['bajuAdatContent1', 'bajuAdatContent2', 'bajuAdatContent3', 'bajuAdatContent4']; // Daftar konten
+        this.contents = ['bajuAdatContent1', 'bajuAdatContent2', 'bajuAdatContent3', 'bajuAdatContent4', 'bajuAdatContent5']; // Daftar konten
     }
 
     preload() {
         this.load.image('bajuAdatbg', 'assets/bg.png');
-        this.load.image('bajuAdatContent1', 'assets/papan menu balajar 1.png');
-        this.load.image('bajuAdatContent2', 'assets/papan menu balajar 2.png');
-        this.load.image('bajuAdatContent3', 'assets/papan menu balajar 3.png');
-        this.load.image('bajuAdatContent4', 'assets/papan menu balajar 4.png');
+        this.load.image('bajuAdatContent1', 'assets/papan menu balajar lontara 1.png');
+        this.load.image('bajuAdatContent2', 'assets/papan menu balajar lontara 2.png');
+        this.load.image('bajuAdatContent3', 'assets/papan menu balajar lontara 3.png');
+        this.load.image('bajuAdatContent4', 'assets/papan menu balajar lontara 4.png');
+        this.load.image('bajuAdatContent5', 'assets/papan menu balajar lontara 5.png');
         this.load.image('buttonBack', 'assets/button kembali.png');
         this.load.image('buttonKiri', 'assets/button geser ke kiri.png');
         this.load.image('buttonKanan', 'assets/button geser ke kanan.png');
@@ -36,12 +37,12 @@ class bajuAdat extends Phaser.Scene {
         });
 
         // Tombol geser ke kiri
-        const buttonKiri = this.createButton(window.innerWidth / 2 - 500, window.innerHeight / 2, 'buttonKiri', soundBack, () => {
+        const buttonKiri = this.createButton(window.innerWidth / 2 - 650, window.innerHeight / 2, 'buttonKiri', soundBack, () => {
             this.changeContent(-1);
         });
 
         // Tombol geser ke kanan
-        const buttonKanan = this.createButton(window.innerWidth / 2 + 500, window.innerHeight / 2, 'buttonKanan', soundBack, () => {
+        const buttonKanan = this.createButton(window.innerWidth / 2 + 650, window.innerHeight / 2, 'buttonKanan', soundBack, () => {
             this.changeContent(1);
         });
 
@@ -52,8 +53,8 @@ class bajuAdat extends Phaser.Scene {
             this.resizeContent(this.currentContent);
             buttonBack.setPosition(80, 80);
 
-            buttonKiri.setPosition(window.innerWidth / 2 - 500, window.innerHeight / 2);
-            buttonKanan.setPosition(window.innerWidth / 2 + 500, window.innerHeight / 2);
+            buttonKiri.setPosition(window.innerWidth / 2 - 650, window.innerHeight / 2);
+            buttonKanan.setPosition(window.innerWidth / 2 + 650, window.innerHeight / 2);
         });
     }
 

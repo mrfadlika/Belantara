@@ -44,24 +44,75 @@ class menulisLontara extends Phaser.Scene {
         this.questions.forEach(question => {
             this.load.image(question.imageKey, `assets/latin/${question.imageKey}.png`);
         });
-        this.load.image('button_hapus', 'assets/button_hapus.png');
-        this.load.image('button_submit_jawaban', 'assets/button_submit_jawaban.png');
+        this.load.image('button_hapus_ungu', 'assets/button hapus ungu.png');
+        this.load.image('button_submit_ungu', 'assets/button submit ungu.png');
         this.load.image('wrongMessage', 'assets/Frame salah.png');
         this.load.image('trueMessage', 'assets/Frame benar.png');
-        this.load.image('buttonBack', 'assets/button kembali.png');
+        this.load.image('buttonHomeHijau', 'assets/button home.png');
         this.load.audio('soundBack', 'music/click_effect-86995.mp3');
-        this.load.image('akhirKuis', 'assets/Frame skor1.png');
+        this.load.image('akhirKuisLontara', 'assets/Frame skor.png');
         this.load.audio('tepukTangan', 'music/applause-alks-ses-efekti-125030.mp3');
     }
 
     create() {
+        const screenWidth = this.scale.width;
+        const screenHeight = this.scale.height;
+
+        // Tambahkan background
         const menulisbg = this.add.image(0, 0, 'menulisbg').setOrigin(0, 0);
+        menulisbg.setDisplaySize(screenWidth, screenHeight);
+
+        // Ukuran dan posisi kotak (sama dengan latihanMenulisLontara)
+        const boxWidth = 720;
+        const boxHeight = 442;
+        const boxSpacing = 100;
+        const centerY = screenHeight / 2 + 89;
+        const leftBoxX = screenWidth / 2 - boxWidth - boxSpacing / 2;
+        const rightBoxX = screenWidth / 2 + boxSpacing / 2;
+
+        // Background kotak kiri (drawing)
+const leftBox = this.add.graphics();
+leftBox.lineStyle(4, 0x8e24aa, 1); // ungu
+leftBox.strokeRoundedRect(leftBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+leftBox.fillStyle(0xffffff, 1);
+leftBox.fillRoundedRect(leftBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+
+// Background kotak kanan (soal)
+const rightBox = this.add.graphics();
+rightBox.lineStyle(4, 0x8e24aa, 1); // ungu
+rightBox.strokeRoundedRect(rightBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+rightBox.fillStyle(0xffffff, 1);
+rightBox.fillRoundedRect(rightBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+
+        // Judul atas kotak
+        this.add.text(leftBoxX + boxWidth / 2, centerY - boxHeight / 2 + 18, 'GAMBAR DISINI', {
+            font: 'bold 20px Arial',
+            color: '#8e24aa'
+        }).setOrigin(0.5, 0);
+
+        this.add.text(rightBoxX + boxWidth / 2, centerY - boxHeight / 2 + 18, 'TULIS HURUF DIBAWAH INI', {
+            font: 'bold 20px Arial',
+            color: '#8e24aa'
+        }).setOrigin(0.5, 0);
+
+        // Drawing board di tengah kotak kiri
+        this.drawingBoardX = leftBoxX + 30;
+        this.drawingBoardY = centerY - boxHeight / 2 + 40;
+        this.drawingBoard = new DrawingBoard(this, this.drawingBoardX, this.drawingBoardY, boxWidth - 60, boxHeight - 80);
+
+        // Gambar soal di tengah kotak kanan
+        this.questionImage = this.add.image(
+            rightBoxX + boxWidth / 2,
+            centerY,
+            this.questions[this.currentQuestionIndex].imageKey
+        ).setOrigin(0.5, 0.5).setScale(0.9);
+
         const button_click = this.sound.add('button_click');
 
         const soundBack = this.sound.add('soundBack');
 
         // Tombol kembali
-        const buttonBack = this.createButtonBack(80, 40, 'buttonBack',     soundBack, () => {
+        const buttonBack = this.createButtonBack(80, 40, 'buttonHomeHijau',     soundBack, () => {
             if (this.questionImage) {
                 this.questionImage.destroy();
                 this.questionImage = null;
@@ -78,29 +129,34 @@ class menulisLontara extends Phaser.Scene {
 
         this.hearts = [];
         // Tambahkan tiga gambar hati ke layar
-        const screenWidth = this.scale.width;
         for (let i = 0; i < this.lives; i++) {
             const heart = this.add.image(screenWidth - (i * 60) - 50, 50, 'heart').setOrigin(1, 0).setScale(0.1);
             this.hearts.push(heart);
         }
 
-        this.drawingBoardX = 100
-        this.drawingBoardY = 170
-        this.drawingBoard = new DrawingBoard(this, this.drawingBoardX, this.drawingBoardY, 400, 300);
+        // ===== Area tombol di bawah kedua box =====
+        const buttonAreaY = centerY + boxHeight / 2 + 50;
 
-        const button_hapus = this.createButton(this.drawingBoardX + 270, this.drawingBoardY + 322, 'button_hapus', button_click, () => {
-            this.clearBoard()
-        });
+        // Tombol hapus (kiri bawah)
+        const button_hapus_ungu = this.createButton(
+            leftBoxX + boxWidth / 2 - 300, buttonAreaY,
+            'button_hapus_ungu', button_click, () => {
+                this.clearBoard()
+            }
+        );
 
-        const button_submit_jawaban = this.createButton(this.drawingBoardX + 358, this.drawingBoardY + 325, 'button_submit_jawaban', button_click, () => {
-            this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
-        });
+        // Tombol submit (kanan bawah, masih di bawah box kiri)
+        const button_submit_ungu = this.createButton(
+            leftBoxX + boxWidth / 2 - 180, buttonAreaY + 8,
+            'button_submit_ungu', button_click, () => {
+                this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
+            }
+        );
 
         // Menambahkan latar belakang putih dan gambar soal
         this.questionBackground = this.add.graphics();
 
-        this.questionImage = this.add.image(750, 145, this.questions[this.currentQuestionIndex].imageKey).setScale(0.9).setOrigin(0, 0);
-        this.scoreText = this.add.text((window.innerWidth/2) - 20, 65, this.score, { fontSize: '45px', color: '#fff', fontStyle: 'bold', stroke: '#000' ,strokeThickness: 1});
+        this.scoreText = this.add.text((window.innerWidth/2) - 20, 180, this.score, { fontSize: '45px', color: '#fff', fontStyle: 'bold', stroke: '#000' ,strokeThickness: 1});
 
         this.wrongMessage = this.add.image(screenWidth / 2, this.scale.height / 2, 'wrongMessage').setOrigin(0.5, 0.5).setScale(0.8).setVisible(false);
 
@@ -131,10 +187,6 @@ class menulisLontara extends Phaser.Scene {
 
     clearBoard(){
         this.drawingBoard.clear();
-        this.drawingBoard.fillStyle(0xffffff, 1);
-        this.drawingBoard.fillRect(0, 0, this.drawingBoard.width, this.drawingBoard.height);
-        this.drawingBoard.strokeRect(0, 0, this.drawingBoard.width, this.drawingBoard.height);
-        this.drawingBoard.lineStyle(10, 0x000000); // Pastikan ketebalan garis tetap 10
     }
 
     createButton(x, y, texture, sound, callback) {
@@ -164,7 +216,6 @@ class menulisLontara extends Phaser.Scene {
         button.setOrigin(0.5, 0.5);
         button.setScale(0.50);
 
-        // Efek visual dan suara untuk tombol saat ditekan
         button.on('pointerdown', () => {
             sound.play();
             button.setScale(0.35); // Kecilkan tombol saat ditekan
@@ -215,21 +266,21 @@ class menulisLontara extends Phaser.Scene {
                 this.questionImage.setTexture(this.questions[this.currentQuestionIndex].imageKey);
             } else {
                 const tepukTangan = this.sound.add('tepukTangan');
-                const akhirKuis = this.add.image(
+                const akhirKuisLontara = this.add.image(
                     this.cameras.main.width / 2,
                     this.cameras.main.height / 2 ,
-                    'akhirKuis',
+                    'akhirKuisLontara',
                 ).setOrigin(0.5);
                 tepukTangan.play();
 
                 const finalScore = this.add.text(
                     this.cameras.main.width / 2, 100,
-                    this.score, { fontSize: '60px', fill: '#fff', align: 'center' }
+                    this.score, { fontSize: '120px', fill: '#A566AD', align: 'center' }
                 ).setOrigin(0.5, -5);
 
                 finalScore.setText(this.score);
 
-                akhirKuis.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+                akhirKuisLontara.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
                 console.log('Pertanyaan selesai.');
                 console.log(this.score);
                 this.time.delayedCall(12000, () => {
@@ -254,23 +305,23 @@ class menulisLontara extends Phaser.Scene {
 
             if (this.lives <= 0) {
                 const tepukTangan = this.sound.add('tepukTangan');
-                const akhirKuis = this.add.image(
+                const akhirKuisLontara = this.add.image(
                     this.cameras.main.width / 2,
                     this.cameras.main.height / 2 ,
-                    'akhirKuis',
+                    'akhirKuisLontara',
                 ).setOrigin(0.5);
                 alert('Game selesai! Anda kehabisan hati.');
                 // Tambahkan logika untuk mengakhiri game atau restart
                 tepukTangan.play();
 
                 const finalScore = this.add.text(
-                    this.cameras.main.width / 2, 100,
-                    this.score, { fontSize: '60px', fill: '#fff', align: 'center' }
+                    this.cameras.main.width / 2, 0,
+                    this.score, { fontSize: '120px', fill: '#A566AD', align: 'center' }
                 ).setOrigin(0.5, -5);
 
                 finalScore.setText(this.score);
 
-                akhirKuis.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+                akhirKuisLontara.setDisplaySize(this.cameras.main.width, this.cameras.main.height);
                 console.log('Pertanyaan selesai.');
                 console.log(this.score);
                 this.time.delayedCall(12000, () => {

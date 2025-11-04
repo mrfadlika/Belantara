@@ -42,53 +42,98 @@ class latihanMenulisLontara extends Phaser.Scene {
         this.training_questions.forEach(question => {
             this.load.image(question.imageKey, `assets/menulis/${question.imageKey}.png`);
         });
-        this.load.image('button_hapus', 'assets/button_hapus.png');
-        this.load.image('button_submit_jawaban', 'assets/button_submit_jawaban.png');
+        this.load.image('button_hapus', 'assets/button hapus hijau.png');
+        this.load.image('button_submit_jawaban', 'assets/button submit hijau.png');
         this.load.image('wrongMessage', 'assets/Frame salah.png');
         this.load.image('trueMessage', 'assets/Frame benar.png');
         console.log(this.training_questions);
     }
 
     create() {
-        const latihanmenulisbg = this.add.image(0, 0, 'latihanmenulisbg').setOrigin(0, 0);
-        const button_click = this.sound.add('button_click');
-        const soundHome = this.sound.add('soundHome');
-
-        this.resizeImage(latihanmenulisbg);
-        window.addEventListener('resize', () => {
-            this.game.scale.resize(window.innerWidth, window.innerHeight);
-            this.resizeImage(latihanmenulisbg);
-        });
-
-        this.drawingBoardX = 100
-        this.drawingBoardY = 170
-        this.drawingBoard = new DrawingBoard(this, this.drawingBoardX, this.drawingBoardY, 400, 300);
-
-        const button_hapus = this.createButton(this.drawingBoardX + 270, this.drawingBoardY + 322, 'button_hapus', button_click, () => {
-            this.clearBoard()
-        });
-
-        const button_submit_jawaban = this.createButton(this.drawingBoardX + 358, this.drawingBoardY + 325, 'button_submit_jawaban', button_click, () => {
-            this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
-        });
         const screenWidth = this.scale.width;
-        // Menambahkan latar belakang putih dan gambar soal
-        this.questionBackground = this.add.graphics();
+        const screenHeight = this.scale.height;
 
-        this.questionImage = this.add.image(750, 145, this.training_questions[this.currentQuestionIndex].imageKey).setScale(0.9).setOrigin(0, 0);
+        // Tambahkan background
+        const bg = this.add.image(0, 0, 'latihanmenulisbg').setOrigin(0, 0);
+        bg.setDisplaySize(screenWidth, screenHeight);
 
-        this.wrongMessage = this.add.image(screenWidth / 2, this.scale.height / 2, 'wrongMessage').setOrigin(0.5, 0.5).setScale(0.8).setVisible(false);
+        // Ukuran dan posisi kotak (LEBIH BESAR)
+        const boxWidth = 600;
+        const boxHeight = 600;
+        const boxSpacing = 100;
+        const centerY = screenHeight / 2 - 40; // sedikit naik agar bawah cukup untuk tombol
+        const leftBoxX = screenWidth / 2 - boxWidth - boxSpacing / 2;
+        const rightBoxX = screenWidth / 2 + boxSpacing / 2;
 
-        this.trueMessage = this.add.image(screenWidth / 2, this.scale.height / 2, 'trueMessage').setOrigin(0.5, 0.5).setScale(0.8).setVisible(false);
+        // Background kotak kiri (drawing)
+        const leftBox = this.add.graphics();
+        leftBox.lineStyle(4, 0x4CAF50, 1);
+        leftBox.strokeRoundedRect(leftBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+        leftBox.fillStyle(0xffffff, 1);
+        leftBox.fillRoundedRect(leftBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
 
-        const buttonMargin = 60; 
-        this.buttonHome = this.createButton(buttonMargin, buttonMargin, 'buttonHome', soundHome, () => {
-            this.buttonHome.setOrigin(0, 0); 
+        // Background kotak kanan (soal)
+        const rightBox = this.add.graphics();
+        rightBox.lineStyle(4, 0x4CAF50, 1);
+        rightBox.strokeRoundedRect(rightBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+        rightBox.fillStyle(0xffffff, 1);
+        rightBox.fillRoundedRect(rightBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+
+        // Judul atas kotak
+        this.add.text(leftBoxX + boxWidth / 2, centerY - boxHeight / 2 + 18, 'GAMBAR DISINI', {
+            font: 'bold 20px Arial',
+            color: '#2e7d32'
+        }).setOrigin(0.5, 0);
+
+        this.add.text(rightBoxX + boxWidth / 2, centerY - boxHeight / 2 + 18, 'TULIS HURUF DIBAWAH INI', {
+            font: 'bold 20px Arial',
+            color: '#2e7d32'
+        }).setOrigin(0.5, 0);
+
+        // Drawing board di tengah kotak kiri
+        this.drawingBoardX = leftBoxX + 30;
+        this.drawingBoardY = centerY - boxHeight / 2 + 40;
+        this.drawingBoard = new DrawingBoard(this, this.drawingBoardX, this.drawingBoardY, boxWidth - 60, boxHeight - 80);
+
+        // Gambar soal di tengah kotak kanan
+        this.questionImage = this.add.image(rightBoxX + boxWidth / 2, centerY, this.training_questions[this.currentQuestionIndex].imageKey)
+            .setOrigin(0.5, 0.5)
+            .setScale(0.9);
+
+        // ===== Area tombol di bawah kedua box =====
+        const buttonAreaY = centerY + boxHeight / 2 + 50;
+
+        // Tombol hapus (kiri bawah)
+        const button_hapus = this.createButton(
+            leftBoxX + boxWidth / 2 - 250, buttonAreaY,
+            'button_hapus', this.sound.add('button_click'), () => this.clearBoard()
+        );
+
+        // Tombol submit (kanan bawah, masih di bawah box kiri)
+        const button_submit_jawaban = this.createButton(
+            leftBoxX + boxWidth / 2 - 120, buttonAreaY + 8,
+            'button_submit_jawaban', this.sound.add('button_click'), () => {
+                this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
+            }
+        );
+
+        // Pesan benar/salah di tengah layar
+        this.wrongMessage = this.add.image(screenWidth / 2, screenHeight / 2, 'wrongMessage').setOrigin(0.5).setScale(0.8).setVisible(false);
+        this.trueMessage = this.add.image(screenWidth / 2, screenHeight / 2, 'trueMessage').setOrigin(0.5).setScale(0.8).setVisible(false);
+
+        // Tombol home di pojok kiri atas
+        const buttonMargin = 60;
+        this.buttonHome = this.createButton(buttonMargin, buttonMargin, 'buttonHome', this.sound.add('soundHome'), () => {
+            this.buttonHome.setOrigin(0, 0);
             this.scene.start('Belajar');
         });
-        
-    }
 
+        // Responsif
+        window.addEventListener('resize', () => {
+            this.game.scale.resize(window.innerWidth, window.innerHeight);
+            // Tambahkan logika resize jika perlu
+        });
+    }
 
     resizeImage(image) {
         image.setDisplaySize(window.innerWidth, window.innerHeight);

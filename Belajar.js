@@ -5,12 +5,10 @@ class Belajar extends Phaser.Scene {
 
     preload() {
         this.load.image('belajarbg', 'assets/bg.png');
-        this.load.image('buttonHome', 'assets/button home (1).png');
-        this.load.image('belajarButton1', 'assets/button baju adat.png');
-        this.load.image('belajarButton2', 'assets/button lontara.png');
-        this.load.image('belajarButton3', 'assets/button alat musik.png');
-        this.load.image('belajarButton4', 'assets/button rumah adat.png');
-        this.load.image('belajarButton5', 'assets/button menulis.png');
+        this.load.image('buttonHome', 'assets/button home hijau.png');
+        this.load.image('belajarButton1', 'assets/button menulis lontara.png');
+        this.load.image('belajarButton2', 'assets/button baju adat.png');
+        this.load.image('belajarButton3', 'assets/button menulis.png');
         this.load.audio('soundHome', 'music/click_effect-86995.mp3'); // Suara tombol home
         this.load.audio('buttonSound', 'music/item-pick-up-38258.mp3'); // Suara tombol
     }
@@ -29,45 +27,25 @@ class Belajar extends Phaser.Scene {
         // Jarak vertikal antara kedua tombol
         const buttonVerticalSpacing = 225;
 
-        // Koordinat posisi untuk sedikit bergeser ke kiri dari tengah
-        const button1X = window.innerWidth / 2 - 330; // Geser 330 piksel ke kiri dari tengah
-        const button1Y = window.innerHeight / 2 - buttonVerticalSpacing / 2; 
+        // Koordinat posisi untuk ditengah layar
+        const button1X = window.innerWidth / 2;
+        const button1Y = window.innerHeight / 2 - buttonVerticalSpacing; 
 
-        // Koordinat posisi untuk tombol kedua (sedikit bergeser ke kiri dari tengah)
-        const button2X = window.innerWidth / 2 - 330; // Geser 330 piksel ke kiri dari tengah
+        // Koordinat posisi untuk sedikit bergeser ke kanan dari tengah
+        const button2X = window.innerWidth / 2 ; // Geser 330 piksel ke kanan dari tengah
         const button2Y = button1Y + buttonVerticalSpacing; 
-
-        // Koordinat posisi untuk sedikit bergeser ke kanan dari tengah
-        const button3X = window.innerWidth / 2 + 330; // Geser 330 piksel ke kanan dari tengah
-        const button3Y = window.innerHeight / 2 - buttonVerticalSpacing / 2; 
-
-        // Koordinat posisi untuk sedikit bergeser ke kanan dari tengah
-        const button4X = window.innerWidth / 2 + 330; // Geser 330 piksel ke kanan dari tengah
-        const button4Y = button3Y + buttonVerticalSpacing; 
-
-        // Koordinat posisi untuk sedikit bergeser ke kanan dari tengah
-        const button5X = window.innerWidth / 2 ; // Geser 330 piksel ke kanan dari tengah
-        const button5Y = button4Y + -100; 
 
         // Assign buttons to class properties
         this.belajarButton1 = this.createButton(button1X, button1Y, 'belajarButton1', buttonSound, () => {
-            this.scene.start('bajuAdat');
+            this.scene.start('latihanMenulisLontara');
         });
 
         this.belajarButton2 = this.createButton(button2X, button2Y, 'belajarButton2', buttonSound, () => {
-            this.scene.start('Lontara');
+            this.scene.start('bajuAdat');
         });
 
-        this.belajarButton3 = this.createButton(button3X, button3Y, 'belajarButton3', buttonSound, () => {
-            this.scene.start('alatMusik');
-        });
-
-        this.belajarButton4 = this.createButton(button4X, button4Y, 'belajarButton4', buttonSound, () => {
-            this.scene.start('rumahAdat');
-        });
-
-        this.belajarButton5 = this.createButton(button5X, button5Y, 'belajarButton5', buttonSound, () => {
-            this.scene.start('latihanMenulisLontara');
+        this.belajarButton3 = this.createButton(button2X, button2Y, 'belajarButton3', buttonSound, () => {
+            this.scene.start('developing');
         });
 
         // tombol home
@@ -79,12 +57,19 @@ class Belajar extends Phaser.Scene {
 
         this.updateButtonPositions();
 
-        // responsif saat ukuran jendela berubah
-        window.addEventListener('resize', () => {
+        // simpan handler agar bisa dihapus nanti
+        this._resizeHandler = () => {
             this.game.scale.resize(window.innerWidth, window.innerHeight);
             this.resizeImage(belajarbg);
             this.updateButtonPositions();
-        });
+        };
+        window.addEventListener('resize', this._resizeHandler);
+
+        // responsif saat ukuran jendela berubah
+        window.addEventListener('resize', this._resizeHandler);
+
+        this.events.on('shutdown', this.shutdown, this);
+        this.events.on('destroy', this.destroy, this);
     }
 
     resizeImage(image) {
@@ -124,20 +109,28 @@ class Belajar extends Phaser.Scene {
 
         if (this.isMobile()) {
             // Adjust button positions for mobile (vertical layout)
-            const buttonVerticalSpacing = 150; // Adjust the spacing for mobile view
-            this.belajarButton1.setPosition(centerX, centerY - 1.5 * buttonVerticalSpacing);
-            this.belajarButton2.setPosition(centerX, centerY - 0.5 * buttonVerticalSpacing);
-            this.belajarButton3.setPosition(centerX, centerY + 0.5 * buttonVerticalSpacing);
-            this.belajarButton4.setPosition(centerX, centerY + 1.5 * buttonVerticalSpacing);
+            const buttonVerticalSpacing = 150;
+            this.belajarButton1.setPosition(centerX, centerY - 1.5 * buttonVerticalSpacing - 50); // dinaikkan 50px
+            this.belajarButton2.setPosition(centerX, centerY - 0.5 * buttonVerticalSpacing - 50); // dinaikkan 50px
+            this.belajarButton3.setPosition(centerX, centerY + 0.5 * buttonVerticalSpacing - 50); // dinaikkan 50px
         } else {
             // Adjust button positions for desktop (horizontal layout)
-            const buttonHorizontalSpacing = 330; // Adjust the spacing for desktop view
-            const buttonVerticalSpacing = 225; // Original spacing
-            this.belajarButton1.setPosition(centerX - buttonHorizontalSpacing, centerY - buttonVerticalSpacing / 2);
-            this.belajarButton2.setPosition(centerX - buttonHorizontalSpacing, centerY + buttonVerticalSpacing / 2);
-            this.belajarButton3.setPosition(centerX + buttonHorizontalSpacing, centerY - buttonVerticalSpacing / 2);
-            this.belajarButton4.setPosition(centerX + buttonHorizontalSpacing, centerY + buttonVerticalSpacing / 2);
+            const buttonVerticalSpacing = 80;
+            this.belajarButton1.setPosition(centerX, centerY - buttonVerticalSpacing - 50); // dinaikkan 50px
+            this.belajarButton2.setPosition(centerX, centerY + buttonVerticalSpacing - 50); // dinaikkan 50px
+            this.belajarButton3.setPosition(centerX, centerY + buttonVerticalSpacing * 2 + 25); // dinaikkan 50px
         }
+    }
+
+    shutdown() {
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+    }
+
+    destroy() {
+        this.shutdown();
     }
 }
 
