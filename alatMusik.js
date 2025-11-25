@@ -19,7 +19,7 @@ class alatMusik extends Phaser.Scene {
         this.load.image('buttonKanan', 'assets/button geser ke kanan.png');
         this.load.audio('soundBack', 'music/click_effect-86995.mp3'); // Suara tombol
     }
-
+    
     create() {
         // Gambar latar belakang
         const alatMusikbg = this.add.image(0, 0, 'alatMusikbg').setOrigin(0, 0);

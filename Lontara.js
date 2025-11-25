@@ -17,7 +17,7 @@ class Lontara extends Phaser.Scene {
         this.load.image('buttonKanan', 'assets/button geser ke kanan.png');
         this.load.audio('soundBack', 'music/click_effect-86995.mp3'); // Suara tombol
     }
-
+    
     create() {
         // Gambar latar belakang
         const Lontaratbg = this.add.image(0, 0, 'Lontaratbg').setOrigin(0, 0);

@@ -29,7 +29,7 @@ class rumahAdat extends Phaser.Scene {
         this.currentContent = this.add.image(window.innerWidth / 2, window.innerHeight / 2, this.contents[this.currentContentIndex]).setInteractive();
         this.currentContent.setOrigin(0.5, 0.5);
         this.resizeContent(this.currentContent);
-
+        
         // Tombol kembali
         const buttonBack = this.createButton(80, 40, 'buttonBack', soundBack, () => {
             this.scene.start('Belajar');

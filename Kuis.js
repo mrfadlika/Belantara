@@ -16,7 +16,7 @@ class Kuis extends Phaser.Scene {
         this.load.audio('soundBack', 'music/click_effect-86995.mp3');
         this.load.json('soal', 'soal.json'); // file json
     }
-
+    
     create() {
         const kuisbg = this.add.image(0, 0, 'kuisbg').setOrigin(0, 0);
         this.resizeImage(kuisbg);

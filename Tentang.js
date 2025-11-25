@@ -30,7 +30,6 @@ class Tentang extends Phaser.Scene {
         this.scene.start('Home');
     });
 
-
         // responsif saat ukuran jendela berubah
         window.addEventListener('resize', () => {
             this.game.scale.resize(window.innerWidth, window.innerHeight);

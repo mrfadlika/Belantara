@@ -8,7 +8,7 @@ class Developing extends Phaser.Scene {
         this.load.image('developing_frame', 'assets/Frame tahap pengembangan.png');
         this.load.image('buttonKembali', 'assets/button kembali.png');
     }
-
+    
     create() {
         const screenWidth = this.scale.width;
         const screenHeight = this.scale.height;

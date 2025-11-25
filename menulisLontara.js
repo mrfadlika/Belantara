@@ -34,7 +34,7 @@ class menulisLontara extends Phaser.Scene {
         this.lives = 3;
         this.initialLives = 3;
     }
-
+    
     preload() {
         this.load.image('heart', 'assets/heart.png')
         this.load.image('menulisbg', 'assets/Frame pengenalan lontara.png');
@@ -48,7 +48,7 @@ class menulisLontara extends Phaser.Scene {
         this.load.image('button_submit_ungu', 'assets/button submit ungu.png');
         this.load.image('wrongMessage', 'assets/Frame salah.png');
         this.load.image('trueMessage', 'assets/Frame benar.png');
-        this.load.image('buttonHomeHijau', 'assets/button home.png');
+        this.load.image('buttonHomeUngu', 'assets/button home.png');
         this.load.audio('soundBack', 'music/click_effect-86995.mp3');
         this.load.image('akhirKuisLontara', 'assets/Frame skor.png');
         this.load.audio('tepukTangan', 'music/applause-alks-ses-efekti-125030.mp3');
@@ -112,7 +112,7 @@ rightBox.fillRoundedRect(rightBoxX, centerY - boxHeight / 2, boxWidth, boxHeight
         const soundBack = this.sound.add('soundBack');
 
         // Tombol kembali
-        const buttonBack = this.createButtonBack(80, 40, 'buttonHomeHijau',     soundBack, () => {
+        const buttonBack = this.createButtonBack(80, 40, 'buttonHomeUngu',     soundBack, () => {
             if (this.questionImage) {
                 this.questionImage.destroy();
                 this.questionImage = null;

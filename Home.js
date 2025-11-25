@@ -10,7 +10,7 @@ class Home extends Phaser.Scene {
         this.load.image('button2', 'assets/button tentang.png'); // Gambar tombol tentang
         this.load.audio('buttonSound', 'music/item-pick-up-38258.mp3'); // Suara tombol
     }
-
+    
     create() {
         // gambar latar belakang 
         const homeImage = this.add.image(0, 0, 'home').setOrigin(0, 0);

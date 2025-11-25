@@ -1,17 +1,16 @@
-class bajuAdat extends Phaser.Scene {
+class Kosakata extends Phaser.Scene {
     constructor() {
-        super({ key: 'bajuAdat' });
+        super({ key: 'kosakata' });
         this.currentContentIndex = 0;
-        this.contents = ['bajuAdatContent1', 'bajuAdatContent2', 'bajuAdatContent3', 'bajuAdatContent4', 'bajuAdatContent5']; // Daftar konten
+        this.contents = ['kosakatakonten1', 'kosakatakonten2', 'kosakatakonten3', 'kosakatakonten4']; // Daftar konten
     }
 
     preload() {
         this.load.image('bajuAdatbg', 'assets/bg.png');
-        this.load.image('bajuAdatContent1', 'assets/papan menu balajar lontara 1.png');
-        this.load.image('bajuAdatContent2', 'assets/papan menu balajar lontara 2.png');
-        this.load.image('bajuAdatContent3', 'assets/papan menu balajar lontara 3.png');
-        this.load.image('bajuAdatContent4', 'assets/papan menu balajar lontara 4.png');
-        this.load.image('bajuAdatContent5', 'assets/papan menu balajar lontara 5.png');
+        this.load.image('kosakatakonten1', 'assets/kosakatan_konten1.png');
+        this.load.image('kosakatakonten2', 'assets/kosakatan_konten2.png');
+        this.load.image('kosakatakonten3', 'assets/kosakatan_konten3.png');
+        this.load.image('kosakatakonten4', 'assets/kosakatan_konten4.png');
         this.load.image('buttonBack', 'assets/button kembali.png');
         this.load.image('buttonKiri', 'assets/button geser ke kiri.png');
         this.load.image('buttonKanan', 'assets/button geser ke kanan.png');
@@ -118,4 +117,4 @@ class bajuAdat extends Phaser.Scene {
     }
 }
 
-export default bajuAdat;
+export default Kosakata;
