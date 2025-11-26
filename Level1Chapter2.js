@@ -485,8 +485,13 @@ class Level1Chapter2 extends Phaser.Scene {
     const isCorrect = JSON.stringify(this.userSequence) === JSON.stringify(currentQuestion.answerSequence);
 
     if (isCorrect) {
-      // Jawaban benar - tampilkan pesan benar lalu kembali ke Chapter2
+      // Tandai level 1 chapter 2 selesai
+      localStorage.setItem('chapter2_level1_completed', 'true');
+      
+      // Show success message and play sound
       this.showTrueMessage();
+      
+      // Wait for the message to be shown before moving to the next scene
       this.time.delayedCall(1500, () => {
         this.scene.start("Chapter2");
       });

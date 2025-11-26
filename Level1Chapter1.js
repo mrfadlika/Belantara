@@ -297,7 +297,7 @@ class Level1Chapter1 extends Phaser.Scene {
 
     // Tombol hapus (kiri bawah)
     const button_hapus_ungu = this.createButton(
-      leftBoxX + boxWidth / 2 - 300,
+      leftBoxX + 120,  // Posisi X yang lebih baik
       buttonAreaY,
       "button_hapus_ungu",
       button_click,
@@ -305,17 +305,21 @@ class Level1Chapter1 extends Phaser.Scene {
         this.clearBoard();
       }
     );
+    button_hapus_ungu.setOrigin(0.5, 0.5);  // Set origin ke tengah
+    button_hapus_ungu.setScale(0.6);  // Set skala yang sesuai
 
     // Tombol submit (kanan bawah, masih di bawah box kiri)
     const button_submit_ungu = this.createButton(
-      leftBoxX + boxWidth / 2 - 180,
-      buttonAreaY + 8,
+      leftBoxX + 250,  // Posisi X yang lebih baik
+      buttonAreaY,
       "button_submit_ungu",
       button_click,
       () => {
         this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
       }
     );
+    button_submit_ungu.setOrigin(0.5, 0.5);  // Set origin ke tengah
+    button_submit_ungu.setScale(0.6);  // Set skala yang sesuai
 
     // Menambahkan latar belakang putih dan gambar soal
     this.questionBackground = this.add.graphics();
@@ -360,18 +364,18 @@ class Level1Chapter1 extends Phaser.Scene {
   }
 
   createButton(x, y, texture, sound, callback) {
-    const button = this.add.image(x, y, texture).setInteractive();
-    button.setOrigin(0.6, 0.6);
+    const button = this.add.image(x, y, texture).setInteractive({ useHandCursor: true });
+    button.setOrigin(0.5, 0.5);
     button.setScale(0.6);
 
     button.on("pointerdown", () => {
-      sound.play();
-      button.setScale(0.5); // Kecilkan tombol saat ditekan
+      if (sound) sound.play();
+      button.setScale(0.55); // Kecilkan tombol saat ditekan
     });
 
     button.on("pointerup", () => {
       button.setScale(0.6); // Kembalikan ukuran tombol saat dilepas
-      callback(); // Panggil callback saat tombol dilepas
+      if (callback) callback(); // Panggil callback saat tombol dilepas
     });
 
     button.on("pointerout", () => {

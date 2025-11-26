@@ -9,6 +9,8 @@ class Bermain extends Phaser.Scene {
         this.load.image('bermainButton1', 'assets/button chapter 1.png');
         this.load.image('bermainButton2', 'assets/button chapter 2.png');
         this.load.image('bermainButton3', 'assets/button chapter 3.png');
+        this.load.image('pop_up_terkunci', 'assets/Frame 109.png');
+        this.load.image('button_kesebelumnya', 'assets/button lanjutkan.png');
         // this.load.image('lockIcon', 'assets/lock_icon.png'); // Ikon kunci
         this.load.audio('soundHome', 'music/click_effect-86995.mp3'); // Suara tombol home
         this.load.audio('buttonSound', 'music/item-pick-up-38258.mp3'); // Suara tombol
@@ -47,8 +49,12 @@ class Bermain extends Phaser.Scene {
 
         // Tombol Chapter 3 (terkunci)
         this.bermainButton3 = this.createButton(centerX, button3Y, 'bermainButton3', buttonSound, () => {
-            this.scene.start('Chapter3');
+            // Show locked popup
+            this.showLockedPopup();
         });
+        
+        // Make the button look locked
+        this.bermainButton3.setAlpha(0.6);
 
         // tombol home (pojok kiri atas)
         const buttonMargin = 60;
@@ -75,6 +81,41 @@ class Bermain extends Phaser.Scene {
         window.addEventListener('resize', () => {
             this.game.scale.resize(window.innerWidth, window.innerHeight);
             this.updateButtonPositions();
+        });
+    }
+
+    showLockedPopup() {
+        // Create semi-transparent background
+        const bg = this.add.rectangle(0, 0, window.innerWidth, window.innerHeight, 0x000000, 0.5)
+            .setOrigin(0, 0)
+            .setInteractive()
+            .on('pointerdown', (pointer) => pointer.event.stopPropagation());
+
+        // Add popup
+        const popup = this.add.image(window.innerWidth / 2, window.innerHeight / 2, 'pop_up_terkunci')
+            .setScale(0.8);
+
+        // Add button to go to Chapter 2
+        const buttonKembali = this.add.image(
+            window.innerWidth / 2,
+            window.innerHeight / 2 + 100,
+            'button_kesebelumnya'
+        )
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.sound.play('buttonSound');
+            this.scene.start('Chapter2');
+        });
+
+        // Make button interactive
+        buttonKembali.on('pointerover', () => buttonKembali.setScale(1.1));
+        buttonKembali.on('pointerout', () => buttonKembali.setScale(1));
+
+        // Add close functionality when clicking outside the popup
+        bg.on('pointerdown', () => {
+            bg.destroy();
+            popup.destroy();
+            buttonKembali.destroy();
         });
     }
 

@@ -1,8 +1,8 @@
 import DrawingBoard from "./object/drawingBoard.js";
 
-class Level2Chapter2 extends Phaser.Scene {
+class Level1Chapter3 extends Phaser.Scene {
   constructor() {
-    super({ key: "Level2Chapter2" });
+    super({ key: "Level1Chapter3" });
     
     // Inisialisasi variabel nyawa
     this.lives = 3;
@@ -12,8 +12,8 @@ class Level2Chapter2 extends Phaser.Scene {
     // Daftar pertanyaan
     this.questions = [
       {
-        imageKey: "PAJAMA", // gambar soal di kotak kanan
-        answerSequence: ["aksara61", "aksara62", "aksara63"],
+        imageKey: "JANGANG", // gambar soal di kotak kanan
+        answerSequence: ["aksara62", "aksara63"],
       },
     ];
 
@@ -177,8 +177,8 @@ class Level2Chapter2 extends Phaser.Scene {
     const boxHeight = 700;
     const boxSpacing = 100;
     const centerY = screenHeight / 2;
-    const leftBoxX = screenWidth / 2 - boxWidth - boxSpacing / 2;
-    const rightBoxX = screenWidth / 2 + boxSpacing / 2;
+    const rightBoxX = screenWidth / 2 - boxWidth - boxSpacing / 2;
+    const leftBoxX = screenWidth / 2 + boxSpacing / 2;
 
     // Background kotak kiri (drawing)
     const leftBox = this.add.graphics();
@@ -218,10 +218,10 @@ class Level2Chapter2 extends Phaser.Scene {
       32
     );
 
-    // Judul atas kotak
+    // Judul atas kotak (swapped positions)
     this.add
       .text(
-        leftBoxX + boxWidth / 2,
+        rightBoxX + boxWidth / 2,
         centerY - boxHeight / 2 + 18,
         "PILIH PILIHAN DIBAWAH",
         {
@@ -233,7 +233,7 @@ class Level2Chapter2 extends Phaser.Scene {
 
     this.add
       .text(
-        rightBoxX + boxWidth / 2,
+        leftBoxX + boxWidth / 2,
         centerY - boxHeight / 2 + 18,
         "MENULIS KOSAKATA MENGGUNAKAN AKSARA LONTARA",
         {
@@ -243,12 +243,10 @@ class Level2Chapter2 extends Phaser.Scene {
       )
       .setOrigin(0.5, 0);
 
-    // Drawing board di tengah kotak kiri
-
-    // Gambar soal di tengah kotak kanan
+    // Question image in the left box (previously right)
     this.questionImage = this.add
       .image(
-        rightBoxX + boxWidth / 2,
+        leftBoxX + boxWidth / 2,
         centerY,
         currentQuestion.imageKey
       )
@@ -295,9 +293,10 @@ class Level2Chapter2 extends Phaser.Scene {
 
     // ===== Area input aksara (tombol pilihan + teks urutan) =====
 
-    // Container untuk menampilkan aksara yang dipilih
+    // Container untuk menampilkan aksara yang dipilih (di tengah kotak kanan)
+    const rightBoxCenterX = rightBoxX + boxWidth / 2;
     this.selectedAksaraContainer = this.add.container(
-      leftBoxX + 40,
+      rightBoxCenterX,
       centerY - boxHeight / 2 + 150
     );
     this.inputAksara = [];
@@ -305,7 +304,8 @@ class Level2Chapter2 extends Phaser.Scene {
     // grid tombol aksara 2 baris x 5 kolom (10 tombol: aksara61..aksara70)
     const aksaraBtnSize = 60;
     const aksaraBtnMargin = 18;
-    const startBtnX = leftBoxX + 80;
+    const totalGridWidth = 5 * aksaraBtnSize + 4 * aksaraBtnMargin;
+    const startBtnX = rightBoxCenterX - totalGridWidth / 2;
     const startBtnY = centerY - boxHeight / 2 + 500;
 
     let aksaraIdx = 61;
@@ -344,12 +344,12 @@ class Level2Chapter2 extends Phaser.Scene {
       }
     }
 
-    // ===== Tombol hapus & submit di pojok kiri bawah kotak kiri =====
+    // ===== Tombol hapus & submit di bawah kotak kanan =====
     const buttonAreaY = centerY + boxHeight / 2 + 50;
 
     // Tombol hapus
     const button_hapus_ungu = this.createButton(
-      leftBoxX + 120,
+      rightBoxX + 120,
       buttonAreaY,
       "button_hapus_ungu",
       button_click,
@@ -364,8 +364,8 @@ class Level2Chapter2 extends Phaser.Scene {
 
     // Tombol submit
     const button_submit_ungu = this.createButton(
-      leftBoxX + 320,
-      buttonAreaY + 8,
+      rightBoxX + 250,
+      buttonAreaY,
       "button_submit_ungu",
       button_click,
       () => {
@@ -483,12 +483,12 @@ class Level2Chapter2 extends Phaser.Scene {
     const isCorrect = JSON.stringify(this.userSequence) === JSON.stringify(currentQuestion.answerSequence);
 
     if (isCorrect) {
-      // Tandai level 2 chapter 2 selesai
-      localStorage.setItem('chapter2_level2_completed', 'true');
+      // Tandai level 1 chapter 2 selesai
+      localStorage.setItem('chapter3_level1_completed', 'true');
       this.trueAnswerSound.play();
       this.showTrueMessage();
       this.time.delayedCall(1500, () => {
-        this.scene.start("Chapter2");
+        this.scene.start("Chapter3");
       });
     } else {
       // Jawaban salah - kurangi nyawa dan tetap di pertanyaan yang sama
@@ -518,12 +518,12 @@ class Level2Chapter2 extends Phaser.Scene {
         });
       } else {
         // Jika nyawa habis, nilai hearts sudah disimpan sebagai 0 di atas
-        // Tunggu sebentar sebelum kembali ke Chapter2
+        // Tunggu sebentar sebelum kembali ke Chapter3
         this.time.delayedCall(1500, () => {
-          this.scene.start("Chapter2");
+          this.scene.start("Chapter3");
         });
       }
     }
   }
 }
-export default Level2Chapter2;
+export default Level1Chapter3;

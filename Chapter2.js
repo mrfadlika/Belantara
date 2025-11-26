@@ -53,13 +53,37 @@ class Chapter2 extends Phaser.Scene {
     const startX = centerX - gridSpacingX;
     const startY = centerY - gridSpacingY / 2;
     this.levelButtons = [];
+    
+    // Dapatkan status penyelesaian level
+    const level1Completed = localStorage.getItem('chapter2_level1_completed') === 'true';
+    const level2Completed = localStorage.getItem('chapter2_level2_completed') === 'true';
+    
     for (let i = 0; i < 6; i++) {
       const row = Math.floor(i / gridCols);
       const col = i % gridCols;
       const x = startX + col * gridSpacingX;
       const y = startY + row * gridSpacingY;
       const btnKey = `chapter2Level${i + 1}`;
+      
+      // Tentukan apakah level terkunci atau tidak
+      let isLocked = true;
+      if (i === 0) {
+        // Level 1 selalu terbuka
+        isLocked = false;
+      } else if (i === 1) {
+        // Level 2 terbuka jika level 1 selesai
+        isLocked = !level1Completed;
+      } else if (i === 2) {
+        // Level 3 terbuka jika level 2 selesai
+        isLocked = !level2Completed;
+      } else {
+        // Level 4,5,6 selalu terkunci
+        isLocked = true;
+      }
+      
       const btn = this.createButton(x, y, btnKey, buttonSound, () => {
+        if (isLocked) return;
+        
         // Cek jumlah hati sebelum masuk level
         let hearts = parseInt(localStorage.getItem("hearts") || "3");
         if (hearts > 0) {
@@ -67,6 +91,8 @@ class Chapter2 extends Phaser.Scene {
           let targetScene = "Level1Chapter2";
           if (i === 1) {
             targetScene = "Level2Chapter2";
+          } else if (i === 2) {
+            targetScene = "Level3Chapter2";
           }
           this.scene.start(targetScene);
         } else {
@@ -144,6 +170,12 @@ class Chapter2 extends Phaser.Scene {
           });
         }
       });
+      
+      // Jika level terkunci, buat tampilan tombol menjadi abu-abu
+      if (isLocked) {
+        btn.setTint(0x888888); // Warna abu-abu untuk level terkunci
+      }
+      
       this.levelButtons.push(btn);
     }
 

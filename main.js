@@ -22,6 +22,7 @@ import BandoScene from "./bando.js";
 import BajuBodoScene from "./bajubodo.js";
 import badikscene from "./badik.js";
 import Level2Chapter2 from "./Level2Chapter2.js";
+import Level1Chapter3 from "./Level1Chapter3.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -56,6 +57,7 @@ const config = {
     BajuBodoScene,
     badikscene,
     Level2Chapter2,
+    Level1Chapter3,
   ],
   parent: "gameContainer",
   dom: {

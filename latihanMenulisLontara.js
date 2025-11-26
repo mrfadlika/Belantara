@@ -10,7 +10,7 @@ class latihanMenulisLontara extends Phaser.Scene {
       { imageKey: "lat_da", answer: "da", sketch: "da" },
       // { imageKey: 'lat_ga', answer: 'ga', sketch: 'ga' },
       { imageKey: "lat_ha", answer: "ha", sketch: "ha" },
-    //   { imageKey: "lat_ja", answer: "ja", sketch: "ja" },
+      //   { imageKey: "lat_ja", answer: "ja", sketch: "ja" },
       { imageKey: "lat_ka", answer: "ka", sketch: "ka" },
       { imageKey: "lat_la", answer: "la", sketch: "la" },
       { imageKey: "lat_ma", answer: "ma", sketch: "ma" },
@@ -48,7 +48,10 @@ class latihanMenulisLontara extends Phaser.Scene {
         question.imageKey,
         `assets/menulis/${question.imageKey}.png`
       );
-      this.load.image(`${question.sketch}_sketch`, `assets/sketsa/${question.sketch}.png`);
+      this.load.image(
+        `${question.sketch}_sketsa`,
+        `assets/sketsa/${question.sketch}.png`
+      );
     });
 
     this.load.image("button_hapus", "assets/button hapus hijau.png");
@@ -84,7 +87,13 @@ class latihanMenulisLontara extends Phaser.Scene {
       32
     );
     leftBox.fillStyle(0xffffff, 1);
-    leftBox.fillRoundedRect(leftBoxX, centerY - boxHeight / 2, boxWidth, boxHeight, 32);
+    leftBox.fillRoundedRect(
+      leftBoxX,
+      centerY - boxHeight / 2,
+      boxWidth,
+      boxHeight,
+      32
+    );
 
     // Right box (question)
     const rightBox = this.add.graphics();
@@ -149,11 +158,11 @@ class latihanMenulisLontara extends Phaser.Scene {
       .image(
         this.drawingBoardX + (boxWidth - 60) / 2,
         this.drawingBoardY + (boxHeight - 80) / 2,
-        `${this.training_questions[this.currentQuestionIndex].sketch}_sketch`
+        `${this.training_questions[this.currentQuestionIndex].sketch}_sketsa`
       )
       .setOrigin(0.5)
-      .setAlpha(3) // Changed from 0.3 to 1 for 100% opacity
-      .setScale(1)
+      .setAlpha(0.3)
+      .setScale(0.9)
       .setDepth(0);
 
     // Make sure drawing board is on top
@@ -287,7 +296,7 @@ class latihanMenulisLontara extends Phaser.Scene {
         this.questionImage.setTexture(nextQuestion.imageKey);
 
         // Update sketch guide for the new question
-        this.sketchGuide.setTexture(nextQuestion.sketch);
+        this.sketchGuide.setTexture(`${nextQuestion.sketch}_sketsa`);
       } else {
         alert("Anda telah menyelesaikan semua soal!");
       }

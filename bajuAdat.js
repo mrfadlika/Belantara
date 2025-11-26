@@ -2,7 +2,7 @@ class bajuAdat extends Phaser.Scene {
     constructor() {
         super({ key: 'bajuAdat' });
         this.currentContentIndex = 0;
-        this.contents = ['bajuAdatContent1', 'bajuAdatContent2', 'bajuAdatContent3', 'bajuAdatContent4', 'bajuAdatContent5']; // Daftar konten
+        this.contents = ['bajuAdatContent1', 'bajuAdatContent2', 'bajuAdatContent3', 'bajuAdatContent4', 'bajuAdatContent5', 'bajuAdatContent6', 'bajuAdatContent7']; // Daftar konten
     }
 
     preload() {
@@ -12,6 +12,8 @@ class bajuAdat extends Phaser.Scene {
         this.load.image('bajuAdatContent3', 'assets/papan menu balajar lontara 3.png');
         this.load.image('bajuAdatContent4', 'assets/papan menu balajar lontara 4.png');
         this.load.image('bajuAdatContent5', 'assets/papan menu balajar lontara 5.png');
+        this.load.image('bajuAdatContent6', 'assets/papan menu balajar lontara 6.png');
+        this.load.image('bajuAdatContent7', 'assets/papan menu balajar lontara 7.png');
         this.load.image('buttonBack', 'assets/button kembali.png');
         this.load.image('buttonKiri', 'assets/button geser ke kiri.png');
         this.load.image('buttonKanan', 'assets/button geser ke kanan.png');
