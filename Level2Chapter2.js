@@ -1,36 +1,24 @@
 import DrawingBoard from "./object/drawingBoard.js";
 
-class Level1Chapter1 extends Phaser.Scene {
+class Level2Chapter2 extends Phaser.Scene {
   constructor() {
-    super({ key: "Level1Chapter1" });
-    this.questions = [
-      { imageKey: "a", answer: "a" },
-      { imageKey: "ba", answer: "ba" },
-      { imageKey: "ca", answer: "ca" },
-      { imageKey: "da", answer: "da" },
-      { imageKey: "ga", answer: "ga" },
-      { imageKey: "ha", answer: "ha" },
-      { imageKey: "ja", answer: "ja" },
-      { imageKey: "ka", answer: "ka" },
-      { imageKey: "la", answer: "la" },
-      { imageKey: "ma", answer: "ma" },
-      { imageKey: "na", answer: "na" },
-      { imageKey: "mpa", answer: "mpa" },
-      { imageKey: "nca", answer: "nca" },
-      { imageKey: "nga", answer: "nga" },
-      { imageKey: "ngka", answer: "ngka" },
-      { imageKey: "nra", answer: "nra" },
-      { imageKey: "nya", answer: "nya" },
-      { imageKey: "pa", answer: "pa" },
-      { imageKey: "ra", answer: "ra" },
-      { imageKey: "sa", answer: "sa" },
-      { imageKey: "ta", answer: "ta" },
-      { imageKey: "wa", answer: "wa" },
-      { imageKey: "ya", answer: "ya" },
-    ];
-    this.currentQuestionIndex = 0;
+    super({ key: "Level2Chapter2" });
+    
+    // Inisialisasi variabel nyawa
     this.lives = 3;
     this.initialLives = 3;
+    this.hearts = [];
+
+    // Daftar pertanyaan
+    this.questions = [
+      {
+        imageKey: "PAJAMA", // gambar soal di kotak kanan
+        answerSequence: ["aksara61", "aksara62", "aksara63"],
+      },
+    ];
+
+    // Reset urutan pilihan user
+    this.userSequence = [];
   }
 
   shuffleArray(array) {
@@ -48,12 +36,19 @@ class Level1Chapter1 extends Phaser.Scene {
     this.load.audio("button_click", "music/click_effect-86995.mp3"); // Suara tombol home
     this.load.audio("wrong_answer_sound", "music/negative_beeps-6008.mp3");
     this.load.audio("true_answer_sound", "music/correct-2-46134.mp3");
+
+    // gambar soal (kata latin) untuk tiap question
     this.questions.forEach((question) => {
       this.load.image(
         question.imageKey,
-        `assets/latin/${question.imageKey}.png`
+        `assets/${question.imageKey}.png`
       );
     });
+
+    // tombol aksara 61..70 (gambar pilihan aksara)
+    for (let i = 61; i <= 70; i++) {
+      this.load.image(`aksara${i}`, `assets/1/Group ${i}.png`);
+    }
     this.load.image("button_hapus_ungu", "assets/button hapus ungu.png");
     this.load.image("button_submit_ungu", "assets/button submit ungu.png");
     this.load.image("wrongMessage", "assets/Frame salah.png");
@@ -74,89 +69,104 @@ class Level1Chapter1 extends Phaser.Scene {
 
     // Hitung pengisian hati berdasarkan waktu yang sudah berlalu
     if (hearts < maxHearts && lastHeartTime) {
-        const elapsed = now - lastHeartTime;
-        const heartsToAdd = Math.floor(elapsed / cooldownSeconds);
-        if (heartsToAdd > 0) {
-            hearts = Math.min(maxHearts, hearts + heartsToAdd);
-            localStorage.setItem("hearts", hearts);
-            // Update lastHeartTime jika belum penuh
-            if (hearts < maxHearts) {
-                lastHeartTime += heartsToAdd * cooldownSeconds;
-                localStorage.setItem("lastHeartTime", lastHeartTime);
-            } else {
-                localStorage.removeItem("lastHeartTime");
-            }
+      const elapsed = now - lastHeartTime;
+      const heartsToAdd = Math.floor(elapsed / cooldownSeconds);
+      if (heartsToAdd > 0) {
+        hearts = Math.min(maxHearts, hearts + heartsToAdd);
+        localStorage.setItem("hearts", hearts);
+        // Update lastHeartTime jika belum penuh
+        if (hearts < maxHearts) {
+          lastHeartTime += heartsToAdd * cooldownSeconds;
+          localStorage.setItem("lastHeartTime", lastHeartTime);
+        } else {
+          localStorage.removeItem("lastHeartTime");
         }
+      }
     }
+
+    // Sinkronkan this.lives dengan jumlah hati global
+    this.lives = hearts;
 
     // Jika hati habis, tampilkan pop up dan countdown
     if (hearts <= 0) {
-        let timeLeft = cooldownSeconds - (now - lastHeartTime);
-        if (timeLeft < 0) timeLeft = 0;
+      let timeLeft = cooldownSeconds - (now - lastHeartTime);
+      if (timeLeft < 0) timeLeft = 0;
 
-        const popup = this.add.image(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY,
-            "pop_up_hatiabis"
-        );
+      const popup = this.add.image(
+        this.cameras.main.centerX,
+        this.cameras.main.centerY,
+        "pop_up_hatiabis"
+      );
 
-        const countdownText = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 50,
-            "",
-            { font: "20px Arial", fill: "#000" }
-        ).setOrigin(0.5);
+      const countdownText = this.add
+        .text(this.cameras.main.centerX, this.cameras.main.centerY + 50, "", {
+          font: "20px Arial",
+          fill: "#000",
+        })
+        .setOrigin(0.5);
 
-        const updateCountdown = () => {
-            const minutes = Math.floor(timeLeft / 60).toString().padStart(2, "0");
-            const seconds = (timeLeft % 60).toString().padStart(2, "0");
-            countdownText.setText(`Waktu pengisian hati: ${minutes}:${seconds}`);
-        };
-        updateCountdown();
+      const updateCountdown = () => {
+        const minutes = Math.floor(timeLeft / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = (timeLeft % 60).toString().padStart(2, "0");
+        countdownText.setText(`Waktu pengisian hati: ${minutes}:${seconds}`);
+      };
+      updateCountdown();
 
-        const timer = this.time.addEvent({
-            delay: 1000,
-            callback: () => {
-                timeLeft--;
-                updateCountdown();
-                if (timeLeft <= 0) {
-                    timer.remove();
-                    // Tambah 1 hati
-                    hearts = 1;
-                    localStorage.setItem("hearts", hearts);
-                    localStorage.setItem("lastHeartTime", Math.floor(Date.now() / 1000));
-                    this.scene.restart();
-                }
-            },
-            callbackScope: this,
-            loop: true,
-        });
+      const timer = this.time.addEvent({
+        delay: 1000,
+        callback: () => {
+          timeLeft--;
+          updateCountdown();
+          if (timeLeft <= 0) {
+            timer.remove();
+            // Tambah 1 hati
+            hearts = 1;
+            localStorage.setItem("hearts", hearts);
+            localStorage.setItem(
+              "lastHeartTime",
+              Math.floor(Date.now() / 1000)
+            );
+            this.scene.restart();
+          }
+        },
+        callbackScope: this,
+        loop: true,
+      });
 
-        const closeButton = this.add.text(
-            this.cameras.main.centerX,
-            this.cameras.main.centerY + 100,
-            "Tutup",
-            {
-                font: "24px Arial",
-                fill: "#000",
-                backgroundColor: "#fff",
-                padding: 10,
-            }
-        ).setOrigin(0.5).setInteractive();
+      const closeButton = this.add
+        .text(
+          this.cameras.main.centerX,
+          this.cameras.main.centerY + 100,
+          "Tutup",
+          {
+            font: "24px Arial",
+            fill: "#000",
+            backgroundColor: "#fff",
+            padding: 10,
+          }
+        )
+        .setOrigin(0.5)
+        .setInteractive();
 
-        closeButton.on("pointerdown", () => {
-            this.scene.start("Chapter1");
-        });
+      closeButton.on("pointerdown", () => {
+        this.scene.start("Chapter1");
+      });
 
-        return;
+      return;
     }
 
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
 
-    // Shuffle questions when game starts
+    // pilih dan acak urutan soal (kalau nanti lebih dari satu)
     this.questions = this.shuffleArray(this.questions);
     this.currentQuestionIndex = 0;
+    const currentQuestion = this.questions[this.currentQuestionIndex];
+
+    // reset urutan pilihan user
+    this.userSequence = [];
 
     // Tambahkan background
     const menulisbg = this.add.image(0, 0, "menulisbg").setOrigin(0, 0);
@@ -213,7 +223,7 @@ class Level1Chapter1 extends Phaser.Scene {
       .text(
         leftBoxX + boxWidth / 2,
         centerY - boxHeight / 2 + 18,
-        "GAMBAR DISINI",
+        "PILIH PILIHAN DIBAWAH",
         {
           font: "bold 20px Arial",
           color: "#8e24aa",
@@ -225,7 +235,7 @@ class Level1Chapter1 extends Phaser.Scene {
       .text(
         rightBoxX + boxWidth / 2,
         centerY - boxHeight / 2 + 18,
-        "MENULIS HURUF MENGGUNAKAN LONTARA",
+        "MENULIS KOSAKATA MENGGUNAKAN AKSARA LONTARA",
         {
           font: "bold 20px Arial",
           color: "#8e24aa",
@@ -234,24 +244,13 @@ class Level1Chapter1 extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     // Drawing board di tengah kotak kiri
-    this.drawingBoardX = leftBoxX + 30;
-    this.drawingBoardY = centerY - boxHeight / 2 + 40;
-    this.drawingBoard = new DrawingBoard(
-      this,
-      this.drawingBoardX,
-      this.drawingBoardY,
-      boxWidth - 60,
-      boxHeight - 80
-    );
-
-    this.clearBoard();
 
     // Gambar soal di tengah kotak kanan
     this.questionImage = this.add
       .image(
         rightBoxX + boxWidth / 2,
         centerY,
-        this.questions[this.currentQuestionIndex].imageKey
+        currentQuestion.imageKey
       )
       .setOrigin(0.5, 0.5)
       .setScale(0.9);
@@ -283,37 +282,96 @@ class Level1Chapter1 extends Phaser.Scene {
     });
 
     this.hearts = [];
-    // Tambahkan tiga gambar hati ke layar
-    for (let i = 0; i < this.lives; i++) {
+    // Tambahkan gambar hati ke layar sesuai jumlah hearts global
+    for (let i = 0; i < maxHearts; i++) {
       const heart = this.add
         .image(screenWidth - i * 60 - 50, 30, "heart")
         .setOrigin(1, 0)
         .setScale(0.1);
+      // tampilkan hanya jika masih punya hati di index tsb
+      heart.setVisible(i < this.lives);
       this.hearts.push(heart);
     }
 
-    // ===== Area tombol di bawah kedua box =====
+    // ===== Area input aksara (tombol pilihan + teks urutan) =====
+
+    // Container untuk menampilkan aksara yang dipilih
+    this.selectedAksaraContainer = this.add.container(
+      leftBoxX + 40,
+      centerY - boxHeight / 2 + 150
+    );
+    this.inputAksara = [];
+
+    // grid tombol aksara 2 baris x 5 kolom (10 tombol: aksara61..aksara70)
+    const aksaraBtnSize = 60;
+    const aksaraBtnMargin = 18;
+    const startBtnX = leftBoxX + 80;
+    const startBtnY = centerY - boxHeight / 2 + 500;
+
+    let aksaraIdx = 61;
+    for (let row = 0; row < 2; row++) {
+      for (let col = 0; col < 5; col++) {
+        const id = `aksara${aksaraIdx}`;
+        const btnX = startBtnX + col * (aksaraBtnSize + aksaraBtnMargin);
+        const btnY = startBtnY + row * (aksaraBtnSize + aksaraBtnMargin);
+
+        const btn = this.add
+          .image(btnX, btnY, id)
+          .setInteractive()
+          .setScale(0.9);
+
+        btn.on("pointerup", () => {
+          // simpan ID pilihan user secara berurutan, misal 'aksara61'
+          this.userSequence.push(id);
+          this.inputAksara.push(id);
+          
+          // Hapus aksara yang sudah ada
+          this.selectedAksaraContainer.removeAll(true);
+          
+          // Tampilkan semua aksara yang dipilih
+          this.inputAksara.forEach((aksaraId, index) => {
+            const aksaraImg = this.add.image(
+              index * 80,  // Spasi antar aksara
+              0,
+              aksaraId
+            ).setScale(0.6);
+            this.selectedAksaraContainer.add(aksaraImg);
+          });
+        });
+
+        aksaraIdx++;
+        if (aksaraIdx > 70) break;
+      }
+    }
+
+    // ===== Tombol hapus & submit di pojok kiri bawah kotak kiri =====
     const buttonAreaY = centerY + boxHeight / 2 + 50;
 
-    // Tombol hapus (kiri bawah)
+    // Tombol hapus
     const button_hapus_ungu = this.createButton(
-      leftBoxX + boxWidth / 2 - 300,
+      leftBoxX + 120,
       buttonAreaY,
       "button_hapus_ungu",
       button_click,
       () => {
+        // hapus gambar di drawing board dan reset urutan pilihan
         this.clearBoard();
+        this.userSequence = [];
+        this.inputAksara = [];
+        this.selectedAksaraContainer.removeAll(true);
       }
     );
 
-    // Tombol submit (kanan bawah, masih di bawah box kiri)
+    // Tombol submit
     const button_submit_ungu = this.createButton(
-      leftBoxX + boxWidth / 2 - 180,
+      leftBoxX + 320,
       buttonAreaY + 8,
       "button_submit_ungu",
       button_click,
       () => {
-        this.drawingBoard.captureCanvasImage(this.checkAnswer.bind(this));
+        // jika nanti tetap mau pakai pengenalan gambar, bisa panggil captureCanvasImage
+        // untuk sekarang kita fokus ke urutan tombol aksara
+        this.checkSequenceAnswer();
       }
     );
 
@@ -331,10 +389,10 @@ class Level1Chapter1 extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setScale(0.8)
       .setVisible(false);
+  
   }
 
   resetGame() {
-
     // Reset lives
     this.lives = this.initialLives;
 
@@ -419,17 +477,22 @@ class Level1Chapter1 extends Phaser.Scene {
     });
   }
 
-  checkAnswer(predictedAnswer) {
+  // Cek jawaban berdasarkan urutan tombol aksara yang dipilih user
+  checkSequenceAnswer() {
     const currentQuestion = this.questions[this.currentQuestionIndex];
-    if (predictedAnswer === currentQuestion.answer) {
-      // Jawaban benar - tampilkan frame benar lalu kembali ke Chapter1
+    const isCorrect = JSON.stringify(this.userSequence) === JSON.stringify(currentQuestion.answerSequence);
+
+    if (isCorrect) {
+      // Jawaban benar - tampilkan pesan benar lalu kembali ke Chapter2
       this.showTrueMessage();
       this.time.delayedCall(1500, () => {
-        this.scene.start("Chapter1");
+        this.scene.start("Chapter2");
       });
     } else {
-      // Jawaban salah - tampilkan frame salah dan kurangi nyawa
+      // Jawaban salah - kurangi nyawa dan tetap di pertanyaan yang sama
       this.showWrongMessage();
+      
+      // Kurangi nyawa
       this.lives--;
 
       // Simpan ke localStorage supaya global
@@ -437,20 +500,28 @@ class Level1Chapter1 extends Phaser.Scene {
       if (this.lives === 0) {
         localStorage.setItem("lastHeartTime", Math.floor(Date.now() / 1000));
       }
+      
+      // Update tampilan hati
+      if (this.lives >= 0) {
+        this.hearts[this.lives].setVisible(false);
+      }
 
       if (this.lives > 0) {
-        // Update tampilan hati: matikan hati terakhir
-        this.hearts[this.lives].setVisible(false);
-        // Tetap di soal yang sama, cukup tunggu frame salah hilang
-      } else {
-        // Nyawa habis: semua hati habis, pindah ke Chapter1 setelah delay
-        this.hearts[0].setVisible(false);
+        // Reset pilihan tapi tetap di soal yang sama
+        this.userSequence = [];
+        this.inputAksara = [];
+        this.inputText.setText("");
         this.time.delayedCall(1500, () => {
-          this.scene.start("Chapter1");
+          this.clearBoard();
+        });
+      } else {
+        // Jika nyawa habis, nilai hearts sudah disimpan sebagai 0 di atas
+        // Tunggu sebentar sebelum kembali ke Chapter2
+        this.time.delayedCall(1500, () => {
+          this.scene.start("Chapter2");
         });
       }
     }
   }
 }
-
-export default Level1Chapter1;
+export default Level2Chapter2;

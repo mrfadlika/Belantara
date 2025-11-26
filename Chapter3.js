@@ -6,7 +6,7 @@ class Chapter3 extends Phaser.Scene {
   preload() {
     this.load.image("chapter3bg", "assets/bg.png");
     this.load.image("buttonHomeUngun", "assets/button home.png");
-    this.load.image("topJudul", "assets/button chapter 3.png");
+    this.load.image("topJudulChapter3", "assets/button chapter 3.png");
     this.load.image("chapter3Level1", "assets/button level 1.png");
     this.load.image("chapter3Level2", "assets/button level 2.png");
     this.load.image("chapter3Level3", "assets/button level 3.png");
@@ -41,7 +41,7 @@ class Chapter3 extends Phaser.Scene {
     // topJudul di tengah atas, tidak interaktif
     const topJudulY = centerY + 300;
     this.topJudul = this.add
-      .image(centerX, centerY, "topJudul")
+      .image(centerX, centerY, "topJudulChapter3")
       .setOrigin(0.5, 0.8)
       .setScale(0.8);
 

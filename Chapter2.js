@@ -6,7 +6,7 @@ class Chapter2 extends Phaser.Scene {
   preload() {
     this.load.image("chapter2bg", "assets/bg.png");
     this.load.image("buttonHomeUngun", "assets/button home.png");
-    this.load.image("topJudul", "assets/button chapter 2.png");
+    this.load.image("topJudulChapter2", "assets/button chapter 2.png");
     this.load.image("chapter2Level1", "assets/button level 1.png");
     this.load.image("chapter2Level2", "assets/button level 2.png");
     this.load.image("chapter2Level3", "assets/button level 3.png");
@@ -41,7 +41,7 @@ class Chapter2 extends Phaser.Scene {
     // topJudul di tengah atas, tidak interaktif
     const topJudulY = centerY + 300;
     this.topJudul = this.add
-      .image(centerX, centerY, "topJudul")
+      .image(centerX, centerY, "topJudulChapter2")
       .setOrigin(0.5, 0.8)
       .setScale(0.8);
 
@@ -63,7 +63,12 @@ class Chapter2 extends Phaser.Scene {
         // Cek jumlah hati sebelum masuk level
         let hearts = parseInt(localStorage.getItem("hearts") || "3");
         if (hearts > 0) {
-          this.scene.start(`Level${i + 1}Chapter2`);
+          // Tentukan scene tujuan berdasarkan level
+          let targetScene = "Level1Chapter2";
+          if (i === 1) {
+            targetScene = "Level2Chapter2";
+          }
+          this.scene.start(targetScene);
         } else {
           // Tampilkan pop up hati habis di Chapter2
           const popup = this.add

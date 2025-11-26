@@ -249,7 +249,7 @@ class DrawingBoard extends Phaser.GameObjects.Graphics {
             const canvasImage = canvas.toDataURL('image/png');
 
             // Kirim gambar ke server Flask untuk diproses
-            fetch('http://127.0.0.1:5000/process-image', {
+            fetch('http://192.168.1.40:5000/process-image', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

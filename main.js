@@ -17,6 +17,11 @@ import TukarCoin from "./TukarCoin.js";
 import Level1Chapter1 from "./Level1Chapter1.js";
 import Chapter2 from "./Chapter2.js";
 import Chapter3 from "./Chapter3.js";
+import Level1Chapter2 from "./Level1Chapter2.js";
+import BandoScene from "./bando.js";
+import BajuBodoScene from "./bajubodo.js";
+import badikscene from "./badik.js";
+import Level2Chapter2 from "./Level2Chapter2.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -46,6 +51,11 @@ const config = {
     Level1Chapter1,
     Chapter2,
     Chapter3,
+    Level1Chapter2,
+    BandoScene,
+    BajuBodoScene,
+    badikscene,
+    Level2Chapter2,
   ],
   parent: "gameContainer",
   dom: {
